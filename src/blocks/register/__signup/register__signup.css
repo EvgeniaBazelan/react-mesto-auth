@@ -1,0 +1,23 @@
+.register__signup{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+    margin: 0px auto;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    /* identical to box height */
+
+    text-align: center;
+}
+@media all and (max-width:900px) {
+    .register__signup {
+        font-size: 12px;
+        line-height: 15px;
+
+    }
+}

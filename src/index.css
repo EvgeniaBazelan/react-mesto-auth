@@ -4,6 +4,7 @@
 @import url(./blocks/page/page.css);
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__text/header__text.css);
 @import url(./blocks/content/content.css);
 @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__avatar/profile__avatar.css);
@@ -31,6 +32,9 @@
 @import url(./blocks/form/__item/_type_error/form__item_type_error.css);
 @import url(./blocks/form/__item-error/form__item-error.css);
 @import url(./blocks/form/__item-error/_visible/form__item-error_visible.css);
+@import url(./blocks/form/__button/_black/form__button_black.css);
+@import url(./blocks/form/__item/_black/form__item_black.css);
+@import url(./blocks/form/_black/form_black.css);
 @import url(./blocks/photo-grid/photo-grid.css);
 @import url(./blocks/photo-grid/__item/photo-grid__item.css);
 @import url(./blocks/photo-grid/__item/_delete/photo-grid__item_delete.css);
@@ -42,5 +46,7 @@
 @import url(./blocks/view/view.css);
 @import url(./blocks/view/__photo/view__photo.css);
 @import url(./blocks/view/__text/view__text.css);
+@import url(./blocks/register/register.css);
+@import url(./blocks/register/__signup/register__signup.css);
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);

@@ -1,9 +1,9 @@
 .header {
-    max-width: 880px;
+    width: 880px;
     display: flex;
-    justify-content: left;
+    justify-content: space-around;
     align-items: center;
-    margin: 0px auto;
+    margin: 0 auto;
     box-sizing: border-box;
     border-bottom: 1px solid rgba(84, 84, 84, 0.7);
     padding-top: 45px;
@@ -11,8 +11,7 @@
 
 @media all and (max-width:900px) {
     .header {
-        min-width: 320px;
-        margin: 0 0 38px;
+        width: 320px;
         padding-top: 28px;
     }
 }

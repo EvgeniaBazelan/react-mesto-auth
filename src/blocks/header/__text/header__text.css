@@ -1,0 +1,18 @@
+.header__text{
+    width: 53px;
+    top: 51px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: right;
+    color: #FFFFFF;
+    padding-bottom: 41px;
+}
+@media all and (max-width:900px) {
+    .header__text {
+
+        padding-top: 28px;
+    }
+}
