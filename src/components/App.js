@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { BrowserRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Redirect, useHistory, Link} from 'react-router-dom';
 import Header from './Header'
 import Main from "./Main";
 import Footer from "./Footer";
@@ -14,9 +14,9 @@ import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import Login from "./Login";
-import auth from "../utils/auth";
 import ok from "../images/Ok.png"
 import fail from "../images/fail.png"
+import * as auth from '../utils/auth'
 
 
 function App() {
@@ -168,37 +168,81 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
     }
     const [isFail,setIsFail]=useState(false)
     const [isGood,setIsGood]=useState(false)
-    function handleSubmitAuth(e){
+    const handleSubmitReg=(e)=>{
         e.preventDefault();
         // setState({email,password})
 
-        auth.postAuthNewUser(emailState,passwordState).then((res)=>{
-            if(res.ok){
-                setIsGood(!isGood)
-            setLoggedIn(true)
-             history.push('/')}
-            else{setIsFail(!isFail)}
+        auth.postRegNewUser(emailState,passwordState).then((res)=>{
+            console.log(res)
+            setIsGood(true)},()=>{
+            history.push('/sing-in')
         }).catch(()=>{
+            setIsFail(true)
             console.log("Ошибка при регистрации")
         })
 
         // здесь обработчик регистрации
     }
-const resOk={
-        name:"Вы зарегестрированны",
+    const handleLogin=()=>{
+        setLoggedIn(true)
+    }
+    const handleSubmitAuth=(obj,e)=>{
+        e.preventDefault();
+        if (obj.email!==emailState || obj.password!==passwordState){
+            return;
+        }
+        auth.postAuthNewUser(emailState,passwordState).then((res)=> {
+                if (res.token) {
+                    handleLogin()
+                }
+            }
+        ,
+            () => {
+                history.push("/profile");
+            }
+        ).catch(()=>{
+            console.log("Ошибка при входе")
+        })
+
+        // здесь обработчик регистрации
+    }
+     const resOk={
+        name:" ",
         link:`${ok}`
-}
+       }
     const resFail={
-        name:"Вы зарегестрированны",
+        name:" ",
         link:`${fail}`
     }
+    const handleTokenCheck=()=>{
+        if (localStorage.getItem('token')){
+            const jwt = localStorage.getItem('jwt');
+            // проверяем токен пользователя
+            auth.getValidAuthNewUser(jwt).then((res) => {
+
+                handleLogin();
+
+                    }, () => {
+                        history.push("/profile");
+                    });
+        }}
+    useEffect(()=>{
+        handleTokenCheck()},[])
+
 
 
     return (
         <BrowserRouter>
       <div className="page">
           <CurrentUserContext.Provider value={currentUser}>
-      <Header />
+      <Header >
+
+              <p className="header__text">{`${emailState.value}`}</p>
+              <Link to="/sing-in" className="header__text"> выйти</Link>
+
+          {/*<Link to="/sing-in" className="header__text">{`${emailState}выйти`}</Link>*/}
+      </Header>
+
 
 
               <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
@@ -211,19 +255,20 @@ const resOk={
               <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
               <Switch>
                   <Route path="/sing-up"> //регистрация
-                      <Register valueEmail={emailState} valuePassword={passwordState} onSubmit={handleSubmitAuth} onChangeEmail={handleChangeEmail} onChangePassword={handleChangePassword}/>
+                      <Register valueEmail={emailState} valuePassword={passwordState} onSubmit={handleSubmitReg} onChangeEmail={handleChangeEmail} onChangePassword={handleChangePassword}/>
                   </Route>
                   <Route path="/sing-in"> //авторизация
-                      <Login/>
+                      <Login onLogin={handleSubmitAuth}/>
                   </Route>
-                  <ProtectedRoute path="/profile"
-                                  component={ <Main  onEditAvatar={handleEditAvatarClick}
-                                                     onAddPlace={handleAddPlaceClick}
-                                                     onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
-                                                     cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />}/>
-                  <Route exact path="/">
-                      {loggedIn ? <Redirect to="/main" /> : <Redirect to="/sing-up" />}//перенаправление в зависимости от статуса авторизации
-                  </Route>
+                  <ProtectedRoute path="/profile" loggedIn={loggedIn} component={Main}>
+                  <Main  onEditAvatar={handleEditAvatarClick}
+                         onAddPlace={handleAddPlaceClick}
+                         onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
+                         cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
+                  </ProtectedRoute>
+                  {/*<Route exact path="/">*/}
+                  {/*    {loggedIn ? <Redirect to="/profile" /> : <Redirect to="/sing-in" />}//перенаправление в зависимости от статуса авторизации*/}
+                  {/*</Route>*/}
               </Switch>
 
       <Footer />

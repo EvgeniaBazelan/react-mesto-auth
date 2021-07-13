@@ -2,50 +2,50 @@ import React, {useState} from 'react';
 
 import { Link } from 'react-router-dom';
 import Header from "./Header";
-import  auth from "../utils/auth";
+import * as  auth from "../utils/auth";
 
 
-function Login () {
-    const [state, setState]= useState({
-        email: '',
-        password: ''
-    })
-
+function Login (props) {
+    const [stateEmailLog,setStateEmailLog]=useState('')
+    const [statePasswordLog,setStatePasswordLog]=useState('')
     //     this.handleChange = this.handleChange.bind(this);
     //     this.handleSubmit = this.handleSubmit.bind(this);
     // }
 
-    function handleChange(e) {
-        const {name, value} = e.target;
-        setState({
-            [name]: value
-        });
+    function handleChangeE(e) {
+        setStateEmailLog(e.target.value)
     }
-    function handleSubmit(e){
-        e.preventDefault();
-        auth.postRegNewUser(state.email,state.password)
-
+    function handleChangeP(e) {
+        setStatePasswordLog(e.target.value)
+    }
+    function handleSubmit(){
+       props.onLogin({
+           email:stateEmailLog,
+           password:statePasswordLog
+       })
         // здесь обработчик регистрации
     }
+
     return(
-        <div>
+        <div className="register">
             <Header>
-                <Link to="/sing-up" className="">Войти</Link>
+                <Link to="/sing-up" className="header__text">Зарегистрироваться</Link>
             </Header>
 
 
-            <form className="form" name="register" onSubmit={handleSubmit} >
-                <h2 className="form__text">Вход</h2>
+            <form className="form form_black" name="login" onSubmit={handleSubmit} >
+                <h2 className="form__text form__text_black" style={{color:'white'}}>Вход</h2>
 
-                <fieldset className="form__personal-info">
-                    <input value={state.email} onChange={handleChange} className="form__item " id='email' placeholder="email" name="email" type="email" required minLength="2"
+                <fieldset className="form__personal-info form__personal-info_black">
+                    <input value={stateEmailLog} onChange={handleChangeE} className="form__item " id='email' placeholder="email" name="email" type="email" required minLength="2"
                            maxLength="40"/>
                     <span className="form__item-error email-error "/>
-                    <input value={state.password} onChange={handleChange} className="form__item " id='password' placeholder="password" name="password" type="password"
+                    <input value={statePasswordLog} onChange={handleChangeP} className="form__item " id='password' placeholder="password" name="password" type="password"
                            required minLength="2" maxLength="200"/>
                     <span className="form__item-error password-error"/>
                 </fieldset>
-                <button className="form__button" type="submit">Войти</button>
+                <button className="form__button" style={{backgroundColor:"white",color:"black"}} type="submit">Войти</button>
+
             </form>
         </div>
 
