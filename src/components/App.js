@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Header from './Header'
 import Main from "./Main";
 import Footer from "./Footer";
@@ -14,7 +14,9 @@ import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import Login from "./Login";
-
+import auth from "../utils/auth";
+import ok from "../images/Ok.png"
+import fail from "../images/fail.png"
 
 
 function App() {
@@ -43,6 +45,8 @@ function App() {
         setIsAddPlacePopupOpen(false)
         setIsViewPopupOpen(false)
         setSelectedCard({name: '', link: ''})
+        setIsFail(false)
+        setIsGood(false)
     }
     function handleViewClick() {
         setIsViewPopupOpen(!isViewPopupOpen)
@@ -143,7 +147,51 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
             console.log("Ошибка при добавлении карточки")
         })
     }
+    const [emailState,setEmailState]=useState('')
+    const [passwordState,setPasswordState]=useState('')
+    const history=useHistory()
+    function handleChangeEmail(e) {
 
+        // const {name, value} = e.target;
+
+        setEmailState(
+            e.target.value
+        );
+    }
+    function handleChangePassword(e) {
+
+        // const {name, value} = e.target;
+
+        setPasswordState(
+            e.target.value
+        );
+    }
+    const [isFail,setIsFail]=useState(false)
+    const [isGood,setIsGood]=useState(false)
+    function handleSubmitAuth(e){
+        e.preventDefault();
+        // setState({email,password})
+
+        auth.postAuthNewUser(emailState,passwordState).then((res)=>{
+            if(res.ok){
+                setIsGood(!isGood)
+            setLoggedIn(true)
+             history.push('/')}
+            else{setIsFail(!isFail)}
+        }).catch(()=>{
+            console.log("Ошибка при регистрации")
+        })
+
+        // здесь обработчик регистрации
+    }
+const resOk={
+        name:"Вы зарегестрированны",
+        link:`${ok}`
+}
+    const resFail={
+        name:"Вы зарегестрированны",
+        link:`${fail}`
+    }
 
 
     return (
@@ -153,27 +201,17 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
       <Header />
 
 
-          {/*<Main  onEditAvatar={handleEditAvatarClick}*/}
-          {/*        onAddPlace={handleAddPlaceClick}*/}
-          {/*        onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}*/}
-          {/*       cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />*/}
-
-          {/*<div className="photo-grid">*/}
-          {/*    {cards.map((item)=>{*/}
-          {/*        return(<Card key={item._id} {...item}/>)*/}
-
-          {/*    })}*/}
-          {/*</div>*/}
               <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
               <AddPlacePopup onAddPlace={handleAddPlaceSubmit} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}/>
               <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
               <ImagePopup card={selectedCard} isOpen={isViewPopupOpen} name="view" onClose={closeAllPopups}/>
-
+              <ImagePopup card={resOk} isOpen={isGood} name="view" onClose={closeAllPopups}/>
+              <ImagePopup card={resFail} isOpen={isFail} name="view" onClose={closeAllPopups}/>
 
               <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
               <Switch>
                   <Route path="/sing-up"> //регистрация
-                      <Register/>
+                      <Register valueEmail={emailState} valuePassword={passwordState} onSubmit={handleSubmitAuth} onChangeEmail={handleChangeEmail} onChangePassword={handleChangePassword}/>
                   </Route>
                   <Route path="/sing-in"> //авторизация
                       <Login/>
@@ -184,7 +222,7 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
                                                      onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
                                                      cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />}/>
                   <Route exact path="/">
-                      {loggedIn ? <Redirect to="/diary" /> : <Redirect to="/sing-up" />}//перенаправление в зависимости от статуса авторизации
+                      {loggedIn ? <Redirect to="/main" /> : <Redirect to="/sing-up" />}//перенаправление в зависимости от статуса авторизации
                   </Route>
               </Switch>
 

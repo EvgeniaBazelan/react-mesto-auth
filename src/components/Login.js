@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 import { Link } from 'react-router-dom';
 import Header from "./Header";
+import  auth from "../utils/auth";
 
 
 function Login () {
@@ -22,6 +23,8 @@ function Login () {
     }
     function handleSubmit(e){
         e.preventDefault();
+        auth.postRegNewUser(state.email,state.password)
+
         // здесь обработчик регистрации
     }
     return(
