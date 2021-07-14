@@ -171,15 +171,21 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
     const handleSubmitReg=(e)=>{
         e.preventDefault();
         // setState({email,password})
-
         auth.postRegNewUser(emailState,passwordState).then((res)=>{
-            console.log(res)
-            setIsGood(true)},()=>{
+            setIsGood(true)
             history.push('/sing-in')
         }).catch(()=>{
             setIsFail(true)
             console.log("Ошибка при регистрации")
         })
+        // auth.postRegNewUser(emailState,passwordState).then((res)=>{
+        //     console.log(res)
+        //     setIsGood(true)},()=>{
+        //     history.push('/sing-in')
+        // }).catch(()=>{
+        //     setIsFail(true)
+        //     console.log("Ошибка при регистрации")
+        // })
 
         // здесь обработчик регистрации
     }
@@ -192,15 +198,11 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
             return;
         }
         auth.postAuthNewUser(emailState,passwordState).then((res)=> {
-                if (res.token) {
-                    handleLogin()
-                }
-            }
-        ,
-            () => {
+            if (res.token) {
+                handleLogin()
                 history.push("/profile");
             }
-        ).catch(()=>{
+        }).catch(()=>{
             console.log("Ошибка при входе")
         })
 
@@ -221,13 +223,15 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
             auth.getValidAuthNewUser(jwt).then((res) => {
 
                 handleLogin();
-
-                    }, () => {
                         history.push("/profile");
                     });
         }}
     useEffect(()=>{
         handleTokenCheck()},[])
+    const signOut=()=>{
+        localStorage.removeItem('token');
+        // history.push('/sing-up');
+    }
 
 
 
@@ -237,8 +241,8 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
           <CurrentUserContext.Provider value={currentUser}>
       <Header >
 
-              <p className="header__text">{`${emailState.value}`}</p>
-              <Link to="/sing-in" className="header__text"> выйти</Link>
+              <p className="header__text">{`${emailState}`}</p>
+              <Link to="/sing-up" onClick={signOut} className="header__text"> выйти</Link>
 
           {/*<Link to="/sing-in" className="header__text">{`${emailState}выйти`}</Link>*/}
       </Header>
@@ -260,12 +264,14 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
                   <Route path="/sing-in"> //авторизация
                       <Login onLogin={handleSubmitAuth}/>
                   </Route>
-                  <ProtectedRoute path="/profile" loggedIn={loggedIn} component={Main}>
-                  <Main  onEditAvatar={handleEditAvatarClick}
-                         onAddPlace={handleAddPlaceClick}
-                         onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
-                         cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
-                  </ProtectedRoute>
+                  <ProtectedRoute exact
+                                  path="/"
+                                  loggedIn={loggedIn}
+                                  component={Main}
+                                  onEditAvatar={handleEditAvatarClick}
+                                  onAddPlace={handleAddPlaceClick}
+                                  onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
+                                  cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
                   {/*<Route exact path="/">*/}
                   {/*    {loggedIn ? <Redirect to="/profile" /> : <Redirect to="/sing-in" />}//перенаправление в зависимости от статуса авторизации*/}
                   {/*</Route>*/}
