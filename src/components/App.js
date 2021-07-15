@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useStateIfMounted} from 'react';
 import {BrowserRouter, Route, Switch, Redirect, useHistory, Link} from 'react-router-dom';
 import Header from './Header'
 import Main from "./Main";
@@ -147,8 +147,8 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
             console.log("Ошибка при добавлении карточки")
         })
     }
-    const [emailState,setEmailState]=useState('')
-    const [passwordState,setPasswordState]=useState('')
+    const [emailState,setEmailState]=useStateIfMounted('')
+    const [passwordState,setPasswordState]=useStateIfMounted('')
     const history=useHistory()
     function handleChangeEmail(e) {
 
@@ -172,8 +172,14 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
         e.preventDefault();
         // setState({email,password})
         auth.postRegNewUser(emailState,passwordState).then((res)=>{
-            setIsGood(true)
-            history.push('/sing-in')
+            if(res.statusCode !== 400){
+                setIsGood(true)
+                history.push('/sing-in')
+            }
+            // setIsGood(true)
+            // history.push('/sing-in')
+            // return res
+
         }).catch(()=>{
             setIsFail(true)
             console.log("Ошибка при регистрации")
@@ -193,7 +199,7 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
         setLoggedIn(true)
     }
     const handleSubmitAuth=(obj,e)=>{
-        e.preventDefault();
+        // e.preventDefault();
         if (obj.email!==emailState || obj.password!==passwordState){
             return;
         }
@@ -226,8 +232,8 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
                         history.push("/profile");
                     });
         }}
-    useEffect(()=>{
-        handleTokenCheck()},[])
+    // useEffect(()=>{
+    //     handleTokenCheck()},[])
     const signOut=()=>{
         localStorage.removeItem('token');
         // history.push('/sing-up');
