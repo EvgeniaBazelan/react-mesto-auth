@@ -246,7 +246,7 @@ function App() {
                     <Route path="/sing-up"> //регистрация
                         <Register valueEmail={emailState}
                                   valuePassword={passwordState}
-                                  onSubmit={handleSubmitReg}
+                                  onRegister={handleSubmitReg}
                                   onChangeEmail={handleChangeEmail}
                                   onChangePassword={handleChangePassword}/>
                     </Route>

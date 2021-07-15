@@ -13,7 +13,7 @@ function Register (props) {
             </Header>
 
 
-            <form className="form form_black" name="register" onSubmit={props.onSubmit}>
+            <form className="form form_black" name="register" onSubmit={props.onRegister}>
                 <h2 className="form__text form__text_black" style={{color: 'white'}}>Регистрация</h2>
 
                 <fieldset className="form__personal-info form__personal-info_black">
