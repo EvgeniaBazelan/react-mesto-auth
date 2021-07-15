@@ -263,6 +263,13 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
 
               <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
               <Switch>
+                  <ProtectedRoute exact path="/"
+                                  loggedIn={loggedIn}
+                                  onEditAvatar={handleEditAvatarClick}
+                                  onAddPlace={handleAddPlaceClick}
+                                  onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
+                                  cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+                                  component={Main}/>
                   <Route path="/sing-up"> //регистрация
                       <Register valueEmail={emailState}
                                 valuePassword={passwordState}
@@ -277,14 +284,7 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
                              onChangeEmail={handleChangeEmailLog}
                              onChangePassword={handleChangePasswordLog}/>
                   </Route>
-                  <ProtectedRoute exact
-                                  path="/"
-                                  loggedIn={loggedIn}
-                                  onEditAvatar={handleEditAvatarClick}
-                                  onAddPlace={handleAddPlaceClick}
-                                  onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
-                                  cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
-                                  component={Main}/>
+
 
 
               </Switch>
@@ -298,5 +298,5 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
 
   );
 }
-export default withRouter(App);
-// export default App;
+// export default withRouter(App);
+export default App;
