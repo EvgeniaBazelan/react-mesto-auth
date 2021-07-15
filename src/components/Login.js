@@ -29,7 +29,7 @@ function Login (props) {
     return(
         <div className="register">
             <Header>
-                <Link to="/sing-up" className="header__text">Зарегистрироваться</Link>
+                <Link to="/sing-up" className="header__link">Зарегистрироваться</Link>
             </Header>
 
 

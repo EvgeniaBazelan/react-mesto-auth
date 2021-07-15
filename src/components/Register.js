@@ -9,7 +9,7 @@ function Register (props) {
     return (
         <div className="register">
             <Header>
-                <Link to="/sing-in" className="header__text">Войти</Link>
+                <Link to="/sing-in" className="header__link">Войти</Link>
             </Header>
 
 
@@ -33,8 +33,8 @@ function Register (props) {
                 </button>
             </form>
             <div className="register__signup">
-                <p>Уже зарегистрированы?</p>
-                <Link to="/sing-in" className="">Войти</Link>
+                <p>Уже зарегистрированы? </p>
+                <Link to="/sing-in" style={{color:"white", textDecoration:"none"}}> Войти</Link>
             </div>
 
         </div>
