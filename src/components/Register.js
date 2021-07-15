@@ -1,6 +1,6 @@
 
 
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Header from "./Header";
 
 
@@ -42,4 +42,4 @@ function Register (props) {
 
     )
 }
-export default Register
+export default withRouter(Register)

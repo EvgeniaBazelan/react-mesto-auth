@@ -36,47 +36,56 @@ function checkStatus(res) {
             body: JSON.stringify({
                 email: email,
                 password: password
-            })}) .then((response) => {
-            console.log(password)
-            console.log(email)
-            console.log(response)
-            try {
-                if (response.status === 200){
-                    return response.json();
-                }
-            } catch(e){
-                return (e)
-            }
-        })
+            })})
+            .then((response => response.json()))
             .then((data) => {
-                console.log(data)
-                // сохраняем токен
-                localStorage.setItem('token', data.token);
-                console.log(data.token)
-                return data;
+                if (data){
+                    localStorage.setItem('token', data.token);
+
+                    return data;
+                }
             })
+            .catch(err => console.log(err))
+    };
         //     .then((response) => {
-        //     return response.json();
-        // }).then((res) => {
-        //     if(res.token){
-        //         localStorage.setItem('token', res.token)
-        //         return res
+        //
+        //     try {
+        //         if (response.status === 200){
+        //             return response.json();
+        //         }
+        //     } catch(e){
+        //         return (e)
         //     }
-            .catch((err) => console.log(err));
-    }
+        // })
+        //     .then((data) => {
+        //
+        //         // сохраняем токен
+        //         localStorage.setItem('token', data.token);
+        //
+        //         return data;
+        //     })
+    //         .then((response) => {
+    //         return response.json();
+    //     }).then((res) => {
+    //         if(res.token){
+    //             localStorage.setItem('token', res.token)
+    //             return res
+    //         }
+    //         .catch((err) => console.log(err));
+    // }
     export const getValidAuthNewUser=(jwt)=>{
         return fetch(`${BASE_URL}/users/me`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${jwt}`
-            },
-            body:JSON.stringify( {
-                "password": "dsfsdfsdfsdf",
-                "email": "email@email.ru"
-            })}).then((response) => {
-            return response.json();
-        }).then((res) => {
-            return res;}).catch((err) => console.log(err));
+            }
+          })
+            .then(res => res.json())
+            .then(data => data)
+        //     .then((response) => {
+        //     return response.json();
+        // })
+        //     .then((res) => {return res;}).catch((err) => console.log(err));
     }
 

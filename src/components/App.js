@@ -1,5 +1,6 @@
-import React,{useState,useEffect,useStateIfMounted} from 'react';
-import {BrowserRouter, Route, Switch, Redirect, useHistory, Link} from 'react-router-dom';
+import React,{useState,useEffect} from 'react';
+import {Route, Switch, useHistory, Link,withRouter} from 'react-router-dom';
+
 import Header from './Header'
 import Main from "./Main";
 import Footer from "./Footer";
@@ -26,6 +27,22 @@ function App() {
     const [isViewPopupOpen,setIsViewPopupOpen]=useState(false)
     const [currentUser,setCurrentUser]=useState({})
     const [loggedIn,setLoggedIn]=useState(false)
+
+    const handleTokenCheck=()=>{
+        if (localStorage.getItem('token')){
+            const jwt = localStorage.getItem('token');
+            // проверяем токен пользователя
+            auth.getValidAuthNewUser(jwt)
+                .then((res) => {
+                    handleLogin();
+                     history.push("/profile");
+                    // return res
+                });
+        }
+        history.push("/sing-in");
+    }
+
+    useEffect(()=>{handleTokenCheck()},[])
 
     useEffect(()=>{
         api.getUserInfo().then(response=>{
@@ -147,20 +164,17 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
             console.log("Ошибка при добавлении карточки")
         })
     }
-    const [emailState,setEmailState]=useStateIfMounted('')
-    const [passwordState,setPasswordState]=useStateIfMounted('')
-    const history=useHistory()
-    function handleChangeEmail(e) {
+    const [emailState,setEmailState]=useState('')
+    const [passwordState,setPasswordState]=useState('')
 
-        // const {name, value} = e.target;
+        const history = useHistory();
+    const handleChangeEmail=(e) =>{
 
         setEmailState(
             e.target.value
         );
     }
-    function handleChangePassword(e) {
-
-        // const {name, value} = e.target;
+    const handleChangePassword=(e) =>{
 
         setPasswordState(
             e.target.value
@@ -173,46 +187,43 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
         // setState({email,password})
         auth.postRegNewUser(emailState,passwordState).then((res)=>{
             if(res.statusCode !== 400){
-                setIsGood(true)
+                setIsGood(!isGood)
+                setEmailState('')
+                setPasswordState('')
                 history.push('/sing-in')
             }
-            // setIsGood(true)
-            // history.push('/sing-in')
-            // return res
-
         }).catch(()=>{
-            setIsFail(true)
+            setIsFail(!isFail)
             console.log("Ошибка при регистрации")
         })
-        // auth.postRegNewUser(emailState,passwordState).then((res)=>{
-        //     console.log(res)
-        //     setIsGood(true)},()=>{
-        //     history.push('/sing-in')
-        // }).catch(()=>{
-        //     setIsFail(true)
-        //     console.log("Ошибка при регистрации")
-        // })
-
-        // здесь обработчик регистрации
     }
     const handleLogin=()=>{
         setLoggedIn(true)
     }
-    const handleSubmitAuth=(obj,e)=>{
-        // e.preventDefault();
-        if (obj.email!==emailState || obj.password!==passwordState){
-            return;
-        }
-        auth.postAuthNewUser(emailState,passwordState).then((res)=> {
-            if (res.token) {
+    const [stateEmailLog,setStateEmailLog]=useState('')
+    const [statePasswordLog,setStatePasswordLog]=useState('')
+    //     this.handleChange = this.handleChange.bind(this);
+    //     this.handleSubmit = this.handleSubmit.bind(this);
+    // }
+
+    const handleChangeEmailLog=(e) =>{
+        setStateEmailLog(e.target.value)
+    }
+    const handleChangePasswordLog=(e) =>{
+        setStatePasswordLog(e.target.value)
+    }
+    const handleSubmitAuth=(e)=>{
+        e.preventDefault();
+        auth.postAuthNewUser(stateEmailLog,statePasswordLog).then((data)=> {
+            if (data.token) {
                 handleLogin()
+                setStateEmailLog('')
+                setStatePasswordLog('')
                 history.push("/profile");
             }
         }).catch(()=>{
             console.log("Ошибка при входе")
         })
-
-        // здесь обработчик регистрации
     }
      const resOk={
         name:" ",
@@ -222,18 +233,8 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
         name:" ",
         link:`${fail}`
     }
-    const handleTokenCheck=()=>{
-        if (localStorage.getItem('token')){
-            const jwt = localStorage.getItem('jwt');
-            // проверяем токен пользователя
-            auth.getValidAuthNewUser(jwt).then((res) => {
 
-                handleLogin();
-                        history.push("/profile");
-                    });
-        }}
-    // useEffect(()=>{
-    //     handleTokenCheck()},[])
+
     const signOut=()=>{
         localStorage.removeItem('token');
         // history.push('/sing-up');
@@ -242,7 +243,7 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
 
 
     return (
-        <BrowserRouter>
+        // <BrowserRouter>
       <div className="page">
           <CurrentUserContext.Provider value={currentUser}>
       <Header >
@@ -252,8 +253,6 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
 
           {/*<Link to="/sing-in" className="header__text">{`${emailState}выйти`}</Link>*/}
       </Header>
-
-
 
               <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
               <AddPlacePopup onAddPlace={handleAddPlaceSubmit} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}/>
@@ -265,31 +264,39 @@ const [selectedCard,setSelectedCard]= useState({name: '', link: ''})
               <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
               <Switch>
                   <Route path="/sing-up"> //регистрация
-                      <Register valueEmail={emailState} valuePassword={passwordState} onSubmit={handleSubmitReg} onChangeEmail={handleChangeEmail} onChangePassword={handleChangePassword}/>
+                      <Register valueEmail={emailState}
+                                valuePassword={passwordState}
+                                onSubmit={handleSubmitReg}
+                                onChangeEmail={handleChangeEmail}
+                                onChangePassword={handleChangePassword}/>
                   </Route>
                   <Route path="/sing-in"> //авторизация
-                      <Login onLogin={handleSubmitAuth}/>
+                      <Login onLogin={handleSubmitAuth}
+                             valueEmail={stateEmailLog}
+                             valuePassword={statePasswordLog}
+                             onChangeEmail={handleChangeEmailLog}
+                             onChangePassword={handleChangePasswordLog}/>
                   </Route>
                   <ProtectedRoute exact
                                   path="/"
                                   loggedIn={loggedIn}
-                                  component={Main}
                                   onEditAvatar={handleEditAvatarClick}
                                   onAddPlace={handleAddPlaceClick}
                                   onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
-                                  cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
-                  {/*<Route exact path="/">*/}
-                  {/*    {loggedIn ? <Redirect to="/profile" /> : <Redirect to="/sing-in" />}//перенаправление в зависимости от статуса авторизации*/}
-                  {/*</Route>*/}
+                                  cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+                                  component={Main}/>
+
+
               </Switch>
+
 
       <Footer />
 
           </CurrentUserContext.Provider>
       </div>
-        </BrowserRouter>
+        // </BrowserRouter>
 
   );
 }
-
-export default App;
+export default withRouter(App);
+// export default App;
