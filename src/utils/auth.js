@@ -1,5 +1,10 @@
 export const BASE_URL = 'https://auth.nomoreparties.co';
-
+function checkStatus(res) {
+    if (res.ok) {
+        return res.json()
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+}
 
   export const postRegNewUser=(email,password)=>{
     return fetch(`${BASE_URL}/signup`, {
@@ -10,12 +15,12 @@ export const BASE_URL = 'https://auth.nomoreparties.co';
                       email: email,
                     password: password
         })})
-    //     .then((response) => {
-    //     return checkStatus(response);
-    // })
-
         .then((response) => {
-            return response.json();})
+        return checkStatus(response);
+    })
+
+        // .then((response) => {
+        //     return response.json();})
         .then((res) => {
             return res
             })
@@ -40,34 +45,9 @@ export const BASE_URL = 'https://auth.nomoreparties.co';
                     return data;
                 }
             })
-            .catch(err => console.log(err))
+
     };
-        //     .then((response) => {
-        //
-        //     try {
-        //         if (response.status === 200){
-        //             return response.json();
-        //         }
-        //     } catch(e){
-        //         return (e)
-        //     }
-        // })
-        //     .then((data) => {
-        //
-        //         // сохраняем токен
-        //         localStorage.setItem('token', data.token);
-        //
-        //         return data;
-        //     })
-    //         .then((response) => {
-    //         return response.json();
-    //     }).then((res) => {
-    //         if(res.token){
-    //             localStorage.setItem('token', res.token)
-    //             return res
-    //         }
-    //         .catch((err) => console.log(err));
-    // }
+
     export const getValidAuthNewUser=(jwt)=>{
         return fetch(`${BASE_URL}/users/me`, {
             method: 'GET',
@@ -78,9 +58,5 @@ export const BASE_URL = 'https://auth.nomoreparties.co';
           })
             .then(res => res.json())
             .then(data => data)
-        //     .then((response) => {
-        //     return response.json();
-        // })
-        //     .then((res) => {return res;}).catch((err) => console.log(err));
     }
 

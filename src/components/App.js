@@ -35,7 +35,9 @@ function App() {
                     handleLogin();
                     history.push("/");
                     // return res
-                });
+                }).catch(()=>{
+                console.log("Ошибка при проверке токена")
+            })
         }
         history.push("/sing-in");
     }
