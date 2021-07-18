@@ -2,6 +2,8 @@ import React from 'react';
 import Card from "./Card";
 
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import Header from "./Header";
+import {Link} from "react-router-dom";
 
 function Main(props) {
     const currentUser=React.useContext(CurrentUserContext)
@@ -9,6 +11,15 @@ function Main(props) {
 
 
     return(
+        <>
+            <Header >
+                <div className="header__text">
+                    <p>{`${localStorage.getItem('email')}`}</p>
+                    <Link to="/sing-in" className="header__link" onClick={props.onClick} > выйти</Link>
+                </div>
+            </Header>
+
+
         <main className="content">
             <section className="profile">
                 <div className="profile__avatar" style={{ backgroundImage: `url(${currentUser.avatar})` }} >
@@ -31,6 +42,7 @@ function Main(props) {
             </div>
 
         </main>
+            </>
     )
 }
 export default Main

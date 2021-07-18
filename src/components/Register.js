@@ -28,18 +28,17 @@ function Register (props) {
                            required minLength="2" maxLength="200"/>
                     <span className="form__item-error password-error"/>
                 </fieldset>
-                <button className="form__button" style={{backgroundColor: "white", color: "black"}}
+                <div className="register__signup">
+                <button className="form__button" style={{backgroundColor: "white", color: "black",marginBottom:"2px"}}
                         type="submit">Зарегистрироваться
                 </button>
+
+                    <p>Уже зарегистрированы?
+                    <Link to="/sing-in" style={{color:"white", textDecoration:"none"}}> Войти</Link>
+                    </p>
+                </div>
             </form>
-            <div className="register__signup">
-                <p>Уже зарегистрированы? </p>
-                <Link to="/sing-in" style={{color:"white", textDecoration:"none"}}> Войти</Link>
-            </div>
-
         </div>
-
-
     )
 }
 export default withRouter(Register)

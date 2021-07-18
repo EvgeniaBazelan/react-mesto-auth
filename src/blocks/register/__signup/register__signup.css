@@ -1,10 +1,6 @@
 .register__signup{
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: #FFFFFF;
-    margin: 0px auto;
+    margin: 0 auto;
     font-family: Inter;
     font-style: normal;
     font-weight: normal;

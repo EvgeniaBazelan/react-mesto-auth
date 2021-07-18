@@ -1,7 +1,6 @@
 
 import React,{useState,useEffect} from 'react';
-import {Route, Switch, useHistory, Link} from 'react-router-dom';
-import Header from './Header'
+import {Route, Switch, useHistory} from 'react-router-dom';
 import Main from "./Main";
 import Footer from "./Footer";
 import '../index.css';
@@ -18,6 +17,7 @@ import Login from "./Login";
 import ok from "../images/Ok.png"
 import fail from "../images/fail.png"
 import * as auth from '../utils/auth'
+import InfoToolTip from "./InfoToolTip";
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen]=useState(false)
     const  [isAddPlacePopupOpen, setIsAddPlacePopupOpen]=useState(false)
@@ -54,7 +54,7 @@ function App() {
         setIsAddPlacePopupOpen(false)
         setIsViewPopupOpen(false)
         setSelectedCard({name: '', link: ''})
-        setIsFail(false)
+        setIsOpenInfoToolTip(false)
         setIsGood(false)
     }
     function handleViewClick() {
@@ -162,20 +162,24 @@ function App() {
             e.target.value
         );
     }
-    const [isFail,setIsFail]=useState(false)
+    const [isOpenInfoToolTip,setIsOpenInfoToolTip]=useState(false)
     const [isGood,setIsGood]=useState(false)
     const handleSubmitReg=(e)=>{
         e.preventDefault();
         // setState({email,password})
         auth.postRegNewUser(emailState,passwordState).then((res)=>{
-            if(res.statusCode !== 400){
-                setIsGood(!isGood)
+            if (res.data.email&&res.data._id) {
+                setIsGood(true)
+                setIsOpenInfoToolTip(true)
                 setEmailState('')
                 setPasswordState('')
                 history.push('/sing-in')
             }
+            else {
+                setIsGood(false)
+                setIsOpenInfoToolTip(true)
+            }
         }).catch(()=>{
-            setIsFail(!isFail)
             console.log("Ошибка при регистрации")
         })
     }
@@ -207,12 +211,12 @@ function App() {
         })
     }
     const resOk={
-        name:" ",
-        link:`${ok}`
+        name:"Вы успешно зарегистрированны ",
+        link: `${ok}`
     }
     const resFail={
-        name:" ",
-        link:`${fail}`
+        name:"Что-то пошло не так ",
+        link: `${fail}`
     }
     const signOut=()=>{
         localStorage.removeItem('token');
@@ -222,18 +226,17 @@ function App() {
         // <BrowserRouter>
         <div className="page">
             <CurrentUserContext.Provider value={currentUser}>
-                <Header >
-                    <div className="header__text">
-                    <p>{`${localStorage.getItem('email')}`}</p>
-                    <Link to="/sing-in" className="header__link" onClick={signOut} > выйти</Link>
-                    </div>
-                </Header>
+
                 <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
                 <AddPlacePopup onAddPlace={handleAddPlaceSubmit} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}/>
                 <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
                 <ImagePopup card={selectedCard} isOpen={isViewPopupOpen} name="view" onClose={closeAllPopups}/>
-                <ImagePopup card={resOk} isOpen={isGood} name="view" onClose={closeAllPopups}/>
-                <ImagePopup card={resFail} isOpen={isFail} name="view" onClose={closeAllPopups}/>
+                {/*<ImagePopup card={resOk} isOpen={isGood} name="view" onClose={closeAllPopups}/>*/}
+                {/*<ImagePopup card={resFail} isOpen={isFail} name="view" onClose={closeAllPopups}/>*/}
+                <InfoToolTip image={isGood? resOk : resFail}
+                             isOpen={isOpenInfoToolTip}
+                             onClose={closeAllPopups}
+                style={{background: "rgba(0, 0, 0, 0.6)"}}/>
                 <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
                 <Switch>
                     <ProtectedRoute exact path="/"
@@ -255,7 +258,8 @@ function App() {
                                valueEmail={stateEmailLog}
                                valuePassword={statePasswordLog}
                                onChangeEmail={handleChangeEmailLog}
-                               onChangePassword={handleChangePasswordLog}/>
+                               onChangePassword={handleChangePasswordLog}
+                               onClick={signOut}/>
                     </Route>
                 </Switch>
                 <Footer />
