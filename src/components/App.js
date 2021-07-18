@@ -165,7 +165,7 @@ function App() {
         );
     }
     const [isOpenInfoToolTip,setIsOpenInfoToolTip]=useState(false)
-    const [isGood,setIsGood]=useState(false)
+    const [isGood,setIsGood]=useState('')
     const handleSubmitReg=(e)=>{
         e.preventDefault();
         // setState({email,password})
