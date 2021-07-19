@@ -182,6 +182,8 @@ function App() {
                 setIsOpenInfoToolTip(true)
             }
         }).catch(()=>{
+            setIsGood(false)
+            setIsOpenInfoToolTip(true)
             console.log("Ошибка при регистрации")
         })
     }
@@ -248,14 +250,14 @@ function App() {
                                     onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
                                     cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
                                     component={Main}/>
-                    <Route path="/sing-up"> //регистрация
+                    <Route path="/sing-up">
                         <Register valueEmail={emailState}
                                   valuePassword={passwordState}
                                   onRegister={handleSubmitReg}
                                   onChangeEmail={handleChangeEmail}
                                   onChangePassword={handleChangePassword}/>
                     </Route>
-                    <Route path="/sing-in"> //авторизация
+                    <Route path="/sing-in">
                         <Login onLogin={handleSubmitAuth}
                                valueEmail={stateEmailLog}
                                valuePassword={statePasswordLog}

@@ -15,12 +15,7 @@ function checkStatus(res) {
                       email: email,
                     password: password
         })})
-        .then((response) => {
-        return checkStatus(response);
-    })
-
-        // .then((response) => {
-        //     return response.json();})
+        .then(checkStatus)
         .then((res) => {
             return res
             })
@@ -37,7 +32,7 @@ function checkStatus(res) {
                 email: email,
                 password: password
             })})
-            .then((response => response.json()))
+            .then(checkStatus)
             .then((data) => {
                 if (data){
                     localStorage.setItem('token', data.token);
@@ -56,7 +51,7 @@ function checkStatus(res) {
                 "Authorization" : `Bearer ${jwt}`
             }
           })
-            .then(res => res.json())
+            .then(checkStatus)
             .then(data => data)
     }
 
