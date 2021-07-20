@@ -14,7 +14,7 @@ function Main(props) {
         <>
             <Header >
                 <div className="header__text">
-                    <p>{`${localStorage.getItem('email')}`}</p>
+                    <p>{`${props.hederEmail}`}</p>
                     <Link to="/sing-in" className="header__link" onClick={props.onClick} > выйти</Link>
                 </div>
             </Header>

@@ -35,6 +35,10 @@ function checkStatus(res) {
             .then(checkStatus)
             .then((data) => {
                 if (data){
+                    // localStorage.setItem( JSON.stringify({
+                    //     'token': data.token,
+                    //     'email': data.email
+                    // }));
                     localStorage.setItem('token', data.token);
 
                     return data;

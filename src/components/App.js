@@ -18,6 +18,7 @@ import ok from "../images/Ok.png"
 import fail from "../images/fail.png"
 import * as auth from '../utils/auth'
 import InfoToolTip from "./InfoToolTip";
+
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen]=useState(false)
     const  [isAddPlacePopupOpen, setIsAddPlacePopupOpen]=useState(false)
@@ -25,6 +26,7 @@ function App() {
     const [isViewPopupOpen,setIsViewPopupOpen]=useState(false)
     const [currentUser,setCurrentUser]=useState({})
     const [loggedIn,setLoggedIn]=useState(false)
+    const [stateHeaderEmail, setStateHeaderEmail ]=useState('')
     const handleTokenCheck=()=>{
         if (localStorage.getItem('token')){
             const jwt = localStorage.getItem('token');
@@ -32,8 +34,10 @@ function App() {
             auth.getValidAuthNewUser(jwt)
                 .then((res) => {
                     localStorage.setItem('email',res.data.email)
+                    setStateHeaderEmail (localStorage.getItem('email'))
                     handleLogin();
                     history.push("/");
+
                     // return res
                 }).catch(()=>{
                 console.log("Ошибка при проверке токена")
@@ -171,6 +175,8 @@ function App() {
         // setState({email,password})
         auth.postRegNewUser(emailState,passwordState).then((res)=>{
             if (res.data.email&&res.data._id) {
+                // localStorage.setItem('email', res.data.email)
+                // setStateHeaderEmail (localStorage.getItem('email'))
                 setIsGood(true)
                 setIsOpenInfoToolTip(true)
                 setEmailState('')
@@ -203,6 +209,7 @@ function App() {
     }
     const handleSubmitAuth=(e)=>{
         e.preventDefault();
+        setStateHeaderEmail(stateEmailLog)
         auth.postAuthNewUser(stateEmailLog,statePasswordLog).then((data)=> {
             if (data.token) {
                 handleLogin()
@@ -224,6 +231,7 @@ function App() {
     }
     const signOut=()=>{
         localStorage.removeItem('token');
+        // localStorage.removeItem('email')
         // history.push('/sing-up');
     }
     return (
@@ -243,13 +251,17 @@ function App() {
                 style={{background: "rgba(0, 0, 0, 0.6)"}}/>
                 <PopupWithForm name="confirm" title="Вы уверенны?" btnText="Да" />
                 <Switch>
+
                     <ProtectedRoute exact path="/"
+                                    hederEmail={stateHeaderEmail}
                                     loggedIn={loggedIn}
                                     onEditAvatar={handleEditAvatarClick}
                                     onAddPlace={handleAddPlaceClick}
                                     onEditProfile={handleEditProfileClick} onCardClick={handleCardClick}
                                     cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+                                    onClick={signOut}
                                     component={Main}/>
+
                     <Route path="/sing-up">
                         <Register valueEmail={emailState}
                                   valuePassword={passwordState}
@@ -263,7 +275,7 @@ function App() {
                                valuePassword={statePasswordLog}
                                onChangeEmail={handleChangeEmailLog}
                                onChangePassword={handleChangePasswordLog}
-                               onClick={signOut}/>
+                               />
                     </Route>
                 </Switch>
                 <Footer />
